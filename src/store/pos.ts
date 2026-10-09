@@ -69,7 +69,7 @@ export const usePos = create<State>((set, get) => ({
         const id = `t-${Date.now()}`;
         return { tabs: [{ id, name: "Walk-in", openedAt: Date.now(), lines: [] }], activeTab: id };
       }
-      return { tabs: rest, activeTab: rest[0].id };
+      return { tabs: rest, activeTab: rest[0]!.id };
     }),
   toggleOnline: () => {
     const synced = get().online ? 0 : get().queued;
