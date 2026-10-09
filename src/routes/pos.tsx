@@ -3,7 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Minus, Plus, Search, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { categories, menu } from "@/data/menu";
+import { useVenue } from "@/store/venue";
+import { useKds } from "@/store/kds";
+import { VenueSwitcher } from "@/components/ts/AppNav";
 import { totals, usePos } from "@/store/pos";
 import { Chip, Logo, Money, Monogram, TSButton, VegDot } from "@/components/ts/primitives";
 import { cn } from "@/lib/utils";
@@ -24,13 +26,16 @@ const vibrate = (ms: number | number[]) => typeof navigator !== "undefined" && n
 
 function Pos() {
   const s = usePos();
+  const venue = useVenue();
+  const { menu, categories, symbol, tax } = venue;
   const [cat, setCat] = useState(categories[0]);
+  useEffect(() => setCat(categories[0]), [venue.id]);
   const [q, setQ] = useState("");
   const [checkout, setCheckout] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const searchRef = useRef<HTMLInputElement>(null);
   const tab = s.tabs.find((t) => t.id === s.activeTab)!;
-  const t = totals(tab.lines);
+  const t = totals(tab.lines, tax.rate, tax.split);
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 30e3);
@@ -47,7 +52,7 @@ function Pos() {
     if (!q) return menu.filter((m) => m.cat === cat);
     const n = q.toLowerCase();
     return menu.filter((m) => m.name.toLowerCase().split("").reduce((i, c) => (i < n.length && c === n[i] ? i + 1 : i), 0) === n.length);
-  }, [cat, q]);
+  }, [cat, q, menu]);
 
   function newTab() {
     const name = prompt("Tab name")?.trim();
@@ -66,19 +71,23 @@ function Pos() {
         <Link to="/" aria-label="Home"><Logo className="text-base" /></Link>
         <div className="flex flex-1 gap-2 overflow-x-auto px-2">
           {s.tabs.map((tb) => {
-            const tt = totals(tb.lines).total;
+            const tt = totals(tb.lines, tax.rate).total;
             return (
               <motion.button key={tb.id + tb.lines.length} animate={{ scale: [1, 1.04, 1] }} transition={{ duration: 0.2 }}
                 onClick={() => s.setActive(tb.id)}
                 className={cn("flex h-11 shrink-0 items-center gap-2 rounded-md border px-3 text-sm", tb.id === s.activeTab ? "border-volt bg-volt text-ink-on-volt" : "bg-raised")}>
                 <span className="font-medium">{tb.name}</span>
-                <span className="font-mono tnum opacity-80">₹{tt.toFixed(0)}</span>
+                <span className="font-mono tnum opacity-80">{symbol} {tt.toFixed(0)}</span>
                 <span className="text-xs opacity-60">{Math.round((now - tb.openedAt) / 60e3)}m</span>
               </motion.button>
             );
           })}
           <TSButton variant="secondary" className="h-11 shrink-0" onClick={newTab}><Plus size={18} /> Tab</TSButton>
         </div>
+        <Link to="/tables" className="hidden h-11 shrink-0 items-center rounded-md px-3 text-sm text-text-secondary hover:bg-raised lg:flex">Tables</Link>
+        <Link to="/kds" className="hidden h-11 shrink-0 items-center rounded-md px-3 text-sm text-text-secondary hover:bg-raised lg:flex">Kitchen</Link>
+        <Link to="/dashboard" className="hidden h-11 shrink-0 items-center rounded-md px-3 text-sm text-text-secondary hover:bg-raised lg:flex">Dashboard</Link>
+        <VenueSwitcher />
         <button onClick={() => { const n = s.toggleOnline(); vibrate(20); if (n) toast.success(`${n} orders synced`); }}
           className="flex h-11 shrink-0 items-center gap-2 rounded-full border bg-raised px-3 text-sm">
           <span className={cn("h-2.5 w-2.5 rounded-full", s.online ? "bg-success" : "bg-warning")} />
@@ -142,13 +151,13 @@ function Pos() {
             )}
           </div>
           <div className="space-y-1 border-t p-4 text-sm">
-            <Row k="Subtotal" v={t.subtotal} /><Row k="CGST 2.5%" v={t.cgst} /><Row k="SGST 2.5%" v={t.sgst} />
+            <Row k="Subtotal" v={t.subtotal} />{tax.split ? <><Row k={`CGST ${tax.rate * 50}%`} v={t.cgst} /><Row k={`SGST ${tax.rate * 50}%`} v={t.sgst} /></> : <Row k={`${tax.label} ${tax.rate * 100}%`} v={t.tax} />}
             <div className="flex items-baseline justify-between pt-2"><span className="text-base font-semibold">Total</span><Money value={t.total} className="text-[28px] font-semibold text-volt-text" /></div>
-            <TSButton size="lg" className="mt-3 w-full" disabled={!tab.lines.length} onClick={() => setCheckout(true)}>Charge ₹{t.total.toFixed(0)}</TSButton>
+            <TSButton size="lg" className="mt-3 w-full" disabled={!tab.lines.length} onClick={() => setCheckout(true)}>Charge {symbol} {t.total.toFixed(0)}</TSButton>
           </div>
         </aside>
       </div>
-      {checkout && <Checkout total={t.total} onClose={() => setCheckout(false)} onDone={() => { s.closeActive(); setCheckout(false); }} />}
+      {checkout && <Checkout total={t.total} onClose={() => setCheckout(false)} onDone={() => { const n = useKds.getState().push(tab.lines, tab.name); if (n) toast.success(`KOT sent to ${n} station${n > 1 ? "s" : ""}`); s.closeActive(); setCheckout(false); }} />}
     </div>
   );
 }
