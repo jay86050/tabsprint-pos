@@ -135,10 +135,10 @@ function Home() {
       <section className="mx-auto max-w-3xl px-5 py-20">
         <h2 className="text-center text-4xl font-bold">Questions, answered.</h2>
         <Accordion type="single" collapsible className="mt-8">
-          {[["Do I need special hardware?", "No. Any tablet, phone or laptop with a browser works. Bring your own printer."],
+          {([["Do I need special hardware?", "No. Any tablet, phone or laptop with a browser works. Bring your own printer."],
             ["What happens when the internet drops?", "You keep selling. Orders are saved on the device and sync when you're back."],
             ["Does it handle GST and VAT?", "Yes. GST slabs with CGST/SGST split, VAT, service charge, inclusive or exclusive."],
-            ["Can I try it free?", "Yes. 14 days, no card needed."]].map(([q, a]) => (
+            ["Can I try it free?", "Yes. 14 days, no card needed."]] as const).map(([q, a]) => (
             <AccordionItem key={q} value={q}><AccordionTrigger className="text-base">{q}</AccordionTrigger><AccordionContent className="text-text-secondary">{a}</AccordionContent></AccordionItem>
           ))}
         </Accordion>
