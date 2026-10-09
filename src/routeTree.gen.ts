@@ -10,13 +10,28 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as KdsRouteImport } from './routes/kds'
 import { Route as PosRouteImport } from './routes/pos'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as StyleguideRouteImport } from './routes/styleguide'
+import { Route as TablesRouteImport } from './routes/tables'
+import { Route as QrTableRouteImport } from './routes/qr.$table'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KdsRoute = KdsRouteImport.update({
+  id: '/kds',
+  path: '/kds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PosRoute = PosRouteImport.update({
@@ -29,44 +44,107 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StyleguideRoute = StyleguideRouteImport.update({
   id: '/styleguide',
   path: '/styleguide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TablesRoute = TablesRouteImport.update({
+  id: '/tables',
+  path: '/tables',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QrTableRoute = QrTableRouteImport.update({
+  id: '/qr/$table',
+  path: '/qr/$table',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/kds': typeof KdsRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/styleguide': typeof StyleguideRoute
+  '/tables': typeof TablesRoute
+  '/qr/$table': typeof QrTableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/kds': typeof KdsRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/styleguide': typeof StyleguideRoute
+  '/tables': typeof TablesRoute
+  '/qr/$table': typeof QrTableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/kds': typeof KdsRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
+  '/settings': typeof SettingsRoute
   '/styleguide': typeof StyleguideRoute
+  '/tables': typeof TablesRoute
+  '/qr/$table': typeof QrTableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pos' | '/pricing' | '/styleguide'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/kds'
+    | '/pos'
+    | '/pricing'
+    | '/settings'
+    | '/styleguide'
+    | '/tables'
+    | '/qr/$table'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pos' | '/pricing' | '/styleguide'
-  id: '__root__' | '/' | '/pos' | '/pricing' | '/styleguide'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/kds'
+    | '/pos'
+    | '/pricing'
+    | '/settings'
+    | '/styleguide'
+    | '/tables'
+    | '/qr/$table'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/kds'
+    | '/pos'
+    | '/pricing'
+    | '/settings'
+    | '/styleguide'
+    | '/tables'
+    | '/qr/$table'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  KdsRoute: typeof KdsRoute
   PosRoute: typeof PosRoute
   PricingRoute: typeof PricingRoute
+  SettingsRoute: typeof SettingsRoute
   StyleguideRoute: typeof StyleguideRoute
+  TablesRoute: typeof TablesRoute
+  QrTableRoute: typeof QrTableRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -76,6 +154,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kds': {
+      id: '/kds'
+      path: '/kds'
+      fullPath: '/kds'
+      preLoaderRoute: typeof KdsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pos': {
@@ -92,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/styleguide': {
       id: '/styleguide'
       path: '/styleguide'
@@ -99,14 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StyleguideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tables': {
+      id: '/tables'
+      path: '/tables'
+      fullPath: '/tables'
+      preLoaderRoute: typeof TablesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qr/$table': {
+      id: '/qr/$table'
+      path: '/qr/$table'
+      fullPath: '/qr/$table'
+      preLoaderRoute: typeof QrTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  KdsRoute: KdsRoute,
   PosRoute: PosRoute,
   PricingRoute: PricingRoute,
+  SettingsRoute: SettingsRoute,
   StyleguideRoute: StyleguideRoute,
+  TablesRoute: TablesRoute,
+  QrTableRoute: QrTableRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
