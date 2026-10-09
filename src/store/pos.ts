@@ -78,8 +78,8 @@ export const usePos = create<State>((set, get) => ({
   },
 }));
 
-export function totals(lines: Line[]) {
+export function totals(lines: Line[], rate = GST_RATE, _split = true) {
   const subtotal = lines.reduce((a, l) => a + l.item.price * l.qty, 0);
-  const tax = Math.round(subtotal * GST_RATE * 100) / 100;
+  const tax = Math.round(subtotal * rate * 100) / 100;
   return { subtotal, tax, cgst: tax / 2, sgst: tax / 2, total: subtotal + tax };
 }

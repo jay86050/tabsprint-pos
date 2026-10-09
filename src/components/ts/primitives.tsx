@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useVenue } from "@/store/venue";
 
 type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost" | "danger";
@@ -67,11 +68,13 @@ export function Chip({
   );
 }
 
-export function Money({ value, symbol = "₹", className }: { value: number; symbol?: string; className?: string }) {
+export function Money({ value, symbol, className }: { value: number; symbol?: string; className?: string }) {
+  const v = useVenue();
+  const sym = symbol ?? v.symbol;
   return (
     <span className={cn("font-mono tnum", className)}>
-      <span className="mr-0.5 text-[0.8em] font-normal opacity-70">{symbol}</span>
-      {value.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+      <span className="mr-0.5 text-[0.8em] font-normal opacity-70">{sym}</span>
+      {value.toLocaleString(sym === "₹" ? "en-IN" : "en-US", { maximumFractionDigits: 2 })}
     </span>
   );
 }
