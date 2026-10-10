@@ -15,3 +15,4 @@
 - Branded primitives live in src/components/ts/; shadcn ui stays in src/components/ui — keeps custom look separate from base library.
 - POS client state uses Zustand stores in src/store/ — fast, synchronous updates for order entry.
 - Editable plan prices live in src/config/pricing.ts — one place to change pricing.
+- Client state persists to IndexedDB via src/lib/persist.ts; orders go through the outbox store with device-scoped ids — offline-first with idempotent replay.
