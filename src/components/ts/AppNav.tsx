@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ChefHat, LayoutGrid, QrCode, Settings, ShoppingBag, BarChart3 } from "lucide-react";
+import { ChefHat, LayoutGrid, QrCode, Settings, ShoppingBag, BarChart3, BookOpen } from "lucide-react";
 import { venues } from "@/data/venues";
 import { useVenueStore } from "@/store/venue";
 import { Logo } from "./primitives";
@@ -19,9 +19,10 @@ export function VenueSwitcher() {
 
 const links = [
   { to: "/pos", label: "POS", icon: ShoppingBag },
+  { to: "/menu", label: "Menu", icon: BookOpen },
   { to: "/tables", label: "Tables", icon: LayoutGrid },
   { to: "/kds", label: "Kitchen", icon: ChefHat },
-  { to: "/dashboard", label: "Dashboard", icon: BarChart3 },
+  { to: "/dashboard", label: "Dashboard", icon: BarChart3, BookOpen },
   { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
