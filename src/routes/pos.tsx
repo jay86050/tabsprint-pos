@@ -7,6 +7,9 @@ import { useVenue } from "@/store/venue";
 import { useKds } from "@/store/kds";
 import { VenueSwitcher } from "@/components/ts/AppNav";
 import { totals, usePos } from "@/store/pos";
+import { useVenueMenu } from "@/store/menu";
+import { useOutbox } from "@/store/outbox";
+import { syncOutbox } from "@/lib/persist";
 import { Chip, Logo, Money, Monogram, TSButton, VegDot } from "@/components/ts/primitives";
 import { cn } from "@/lib/utils";
 
@@ -27,7 +30,9 @@ const vibrate = (ms: number | number[]) => typeof navigator !== "undefined" && n
 function Pos() {
   const s = usePos();
   const venue = useVenue();
-  const { menu, categories, symbol, tax } = venue;
+  const { symbol, tax } = venue;
+  const { items: menu, categories } = useVenueMenu();
+  const queued = useOutbox((o) => o.entries.length);
   const [cat, setCat] = useState(categories[0]);
   useEffect(() => setCat(categories[0]), [venue.id]);
   const [q, setQ] = useState("");
@@ -88,10 +93,10 @@ function Pos() {
         <Link to="/kds" className="hidden h-11 shrink-0 items-center rounded-md px-3 text-sm text-text-secondary hover:bg-raised lg:flex">Kitchen</Link>
         <Link to="/dashboard" className="hidden h-11 shrink-0 items-center rounded-md px-3 text-sm text-text-secondary hover:bg-raised lg:flex">Dashboard</Link>
         <VenueSwitcher />
-        <button onClick={() => { const n = s.toggleOnline(); vibrate(20); if (n) toast.success(`${n} orders synced`); }}
+        <button onClick={() => { s.toggleOnline(); vibrate(20); if (usePos.getState().online) void syncOutbox(); else toast.warning("Offline mode. Orders will queue."); }}
           className="flex h-11 shrink-0 items-center gap-2 rounded-full border bg-raised px-3 text-sm">
           <span className={cn("h-2.5 w-2.5 rounded-full", s.online ? "bg-success" : "bg-warning")} />
-          {s.online ? "Online" : `Offline, ${s.queued} queued`}
+          {s.online ? "Online" : `Offline, ${queued} queued`}
         </button>
       </header>
 
@@ -157,7 +162,7 @@ function Pos() {
           </div>
         </aside>
       </div>
-      {checkout && <Checkout total={t.total} onClose={() => setCheckout(false)} onDone={() => { const n = useKds.getState().push(tab.lines, tab.name); if (n) toast.success(`KOT sent to ${n} station${n > 1 ? "s" : ""}`); s.closeActive(); setCheckout(false); }} />}
+      {checkout && <Checkout total={t.total} onClose={() => setCheckout(false)} onDone={() => { useOutbox.getState().enqueue({ kind: "order", label: tab.name, total: t.total, payload: { lines: tab.lines, venue: venue.id } }); if (usePos.getState().online) void syncOutbox(true); else toast.info("Order saved offline, will sync"); const n = useKds.getState().push(tab.lines, tab.name); if (n) toast.success(`KOT sent to ${n} station${n > 1 ? "s" : ""}`); s.closeActive(); setCheckout(false); }} />}
     </div>
   );
 }
