@@ -59,7 +59,7 @@ function Onboarding() {
 
   const onFile = async (f: File) => {
     const r = parseMenuCsv(await f.text());
-    if (!r.items.length) return toast.error("No items found. Use: name, price, category, veg, station");
+    if (!r.items.length) { toast.error("No items found. Use: name, price, category, veg, station"); return; }
     setCsv(r); setMenuSrc("csv"); toast.success(`${r.items.length} items imported`);
   };
 

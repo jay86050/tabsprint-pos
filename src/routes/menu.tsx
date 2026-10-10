@@ -109,7 +109,7 @@ function ItemDialog({ item, categories, groups, defaultRate, onClose }: { item: 
   const st = useMenuStore();
   const exists = useVenueMenu().items.some((i) => i.id === item.id);
   const save = () => {
-    if (!d.name.trim()) return toast.error("Give the item a name");
+    if (!d.name.trim()) { toast.error("Give the item a name"); return; }
     st.upsertItem({ ...d, name: d.name.trim() });
     toast.success(exists ? "Item updated" : "Item added");
     onClose();
@@ -127,7 +127,7 @@ function ItemDialog({ item, categories, groups, defaultRate, onClose }: { item: 
           <label className="flex items-center justify-between rounded-md border bg-raised px-3 py-2 text-sm">Vegetarian<Switch checked={d.veg} onCheckedChange={(v) => setD({ ...d, veg: v })} /></label>
           <label className="flex items-center justify-between rounded-md border bg-raised px-3 py-2 text-sm">86'd (out of stock)<Switch checked={!!d.out} onCheckedChange={(v) => setD({ ...d, out: v })} /></label>
           <fieldset className="sm:col-span-2"><legend className="text-sm font-medium">Modifier groups</legend>
-            <div className="mt-2 flex flex-wrap gap-2">{groups.map((g) => { const on = d.groups?.includes(g.id); return <Chip key={g.id} active={on} onClick={() => setD({ ...d, groups: on ? d.groups!.filter((x) => x !== g.id) : [...(d.groups ?? []), g.id] })}>{g.name}</Chip>; })}</div>
+            <div className="mt-2 flex flex-wrap gap-2">{groups.map((g) => { const on = !!d.groups?.includes(g.id); return <Chip key={g.id} active={on} onClick={() => setD({ ...d, groups: on ? d.groups!.filter((x) => x !== g.id) : [...(d.groups ?? []), g.id] })}>{g.name}</Chip>; })}</div>
           </fieldset>
         </div>
         <div className="mt-4 flex justify-between">
@@ -143,7 +143,7 @@ function GroupDialog({ group, onClose }: { group: ModifierGroup; onClose: () => 
   const [g, setG] = useState(group);
   const save = () => {
     const options = g.options.filter((o) => o.name.trim());
-    if (!g.name.trim() || !options.length) return toast.error("Add a name and at least one option");
+    if (!g.name.trim() || !options.length) { toast.error("Add a name and at least one option"); return; }
     useMenuStore.getState().upsertGroup({ ...g, options });
     toast.success("Modifier group saved");
     onClose();
