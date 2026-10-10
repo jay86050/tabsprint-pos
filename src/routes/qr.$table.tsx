@@ -5,6 +5,7 @@ import { Bell, Check, Minus, Plus, Search, Share2, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Chip, Money, Monogram, TSButton, VegDot } from "@/components/ts/primitives";
 import type { MenuItem } from "@/data/menu";
+import { useVenueMenu } from "@/store/menu";
 import { useVenue } from "@/store/venue";
 import { useKds } from "@/store/kds";
 import { cn } from "@/lib/utils";
@@ -28,7 +29,8 @@ const addons = [{ n: "Extra cheese", d: 0.12 }, { n: "Make it spicy", d: 0 }, { 
 function Qr() {
   const { table } = Route.useParams();
   const venue = useVenue();
-  const [cat, setCat] = useState(venue.categories[0]!);
+  const vm = useVenueMenu();
+  const [cat, setCat] = useState(vm.categories[0]!);
   const [q, setQ] = useState("");
   const [vegOnly, setVegOnly] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
@@ -39,7 +41,7 @@ function Qr() {
   const [pay, setPay] = useState(false);
   const [feedback, setFeedback] = useState(false);
 
-  useEffect(() => setCat(venue.categories[0]!), [venue.id]);
+  useEffect(() => setCat(vm.categories[0]!), [venue.id]);
   useEffect(() => {
     if (stage < 0 || stage >= 2) return;
     const id = setTimeout(() => setStage(stage + 1), 6000);
@@ -47,7 +49,7 @@ function Qr() {
   }, [stage]);
 
   const items = useMemo(
-    () => venue.menu.filter((m) => (q ? m.name.toLowerCase().includes(q.toLowerCase()) : m.cat === cat) && (!vegOnly || m.veg)),
+    () => vm.items.filter((m) => (q ? m.name.toLowerCase().includes(q.toLowerCase()) : m.cat === cat) && (!vegOnly || m.veg)),
     [venue, cat, q, vegOnly],
   );
   const cartTotal = cart.reduce((a, l) => a + l.price * l.qty, 0);
@@ -82,7 +84,7 @@ function Qr() {
         </label>
         <div className="mt-3 flex gap-2 overflow-x-auto">
           <Chip active={vegOnly} onClick={() => setVegOnly(!vegOnly)}>Veg only</Chip>
-          {venue.categories.map((c) => <Chip key={c} active={!q && cat === c} onClick={() => { setQ(""); setCat(c); }}>{c}</Chip>)}
+          {vm.categories.map((c) => <Chip key={c} active={!q && cat === c} onClick={() => { setQ(""); setCat(c); }}>{c}</Chip>)}
         </div>
       </header>
 
