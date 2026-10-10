@@ -24,10 +24,10 @@ export async function syncOutbox(silent = false) {
   const id = silent ? undefined : toast.loading(`Syncing ${pending} queued order${pending > 1 ? "s" : ""}…`);
   try {
     const r = await useOutbox.getState().flush();
-    if (r.synced || r.duplicates) toast.success(`${r.synced} order${r.synced === 1 ? "" : "s"} synced${r.duplicates ? `, ${r.duplicates} duplicate skipped` : ""}`, { id });
+    if (r.synced || r.duplicates) toast.success(`${r.synced} order${r.synced === 1 ? "" : "s"} synced${r.duplicates ? `, ${r.duplicates} duplicate skipped` : ""}`, (id ? { id } : {}));
     else if (id) toast.dismiss(id);
   } catch {
-    toast.error("Sync failed. Will retry when online.", { id });
+    toast.error("Sync failed. Will retry when online.", (id ? { id } : {}));
   }
 }
 

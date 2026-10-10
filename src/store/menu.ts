@@ -47,7 +47,7 @@ export const useMenuStore = create<State>((set) => ({
   renameCategory: (from, to) => set((s) => edit(s, (m) => ({ ...m, categories: m.categories.map((c) => (c === from ? to : c)), items: m.items.map((i) => (i.cat === from ? { ...i, cat: to } : i)) }))),
   removeCategory: (name) => set((s) => edit(s, (m) => ({ ...m, categories: m.categories.filter((c) => c !== name), items: m.items.filter((i) => i.cat !== name) }))),
   upsertGroup: (g) => set((s) => edit(s, (m) => ({ ...m, groups: m.groups.some((x) => x.id === g.id) ? m.groups.map((x) => (x.id === g.id ? g : x)) : [...m.groups, g] }))),
-  removeGroup: (id) => set((s) => edit(s, (m) => ({ ...m, groups: m.groups.filter((x) => x.id !== id), items: m.items.map((i) => ({ ...i, groups: i.groups?.filter((x) => x !== id) })) }))),
+  removeGroup: (id) => set((s) => edit(s, (m) => ({ ...m, groups: m.groups.filter((x) => x.id !== id), items: m.items.map((i) => ({ ...i, groups: (i.groups ?? []).filter((x) => x !== id) })) }))),
 }));
 
 export function useVenueMenu(): VenueMenu {

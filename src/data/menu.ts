@@ -9,7 +9,7 @@ export type MenuItem = {
   stock?: number;
   out?: boolean;
   station: "Bar" | "Kitchen" | "Grill";
-  taxRate?: number; // overrides venue rate when set
+  taxRate?: number | undefined; // overrides venue rate when set
   groups?: string[]; // modifier group ids
 };
 

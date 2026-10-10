@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as KdsRouteImport } from './routes/kds'
+import { Route as MenuRouteImport } from './routes/menu'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PosRouteImport } from './routes/pos'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -32,6 +34,16 @@ const DashboardRoute = DashboardRouteImport.update({
 const KdsRoute = KdsRouteImport.update({
   id: '/kds',
   path: '/kds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenuRoute = MenuRouteImport.update({
+  id: '/menu',
+  path: '/menu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PosRoute = PosRouteImport.update({
@@ -69,6 +81,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/kds': typeof KdsRoute
+  '/menu': typeof MenuRoute
+  '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
@@ -80,6 +94,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/kds': typeof KdsRoute
+  '/menu': typeof MenuRoute
+  '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
@@ -92,6 +108,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/kds': typeof KdsRoute
+  '/menu': typeof MenuRoute
+  '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
@@ -105,6 +123,8 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/kds'
+    | '/menu'
+    | '/onboarding'
     | '/pos'
     | '/pricing'
     | '/settings'
@@ -116,6 +136,8 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/kds'
+    | '/menu'
+    | '/onboarding'
     | '/pos'
     | '/pricing'
     | '/settings'
@@ -127,6 +149,8 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/kds'
+    | '/menu'
+    | '/onboarding'
     | '/pos'
     | '/pricing'
     | '/settings'
@@ -139,6 +163,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   KdsRoute: typeof KdsRoute
+  MenuRoute: typeof MenuRoute
+  OnboardingRoute: typeof OnboardingRoute
   PosRoute: typeof PosRoute
   PricingRoute: typeof PricingRoute
   SettingsRoute: typeof SettingsRoute
@@ -168,6 +194,20 @@ declare module '@tanstack/react-router' {
       path: '/kds'
       fullPath: '/kds'
       preLoaderRoute: typeof KdsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pos': {
@@ -219,6 +259,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   KdsRoute: KdsRoute,
+  MenuRoute: MenuRoute,
+  OnboardingRoute: OnboardingRoute,
   PosRoute: PosRoute,
   PricingRoute: PricingRoute,
   SettingsRoute: SettingsRoute,
