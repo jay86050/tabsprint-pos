@@ -9,6 +9,8 @@ export type MenuItem = {
   stock?: number;
   out?: boolean;
   station: "Bar" | "Kitchen" | "Grill";
+  taxRate?: number; // overrides venue rate when set
+  groups?: string[]; // modifier group ids
 };
 
 const u = (id: string) => `https://images.unsplash.com/${id}?w=400&h=300&fit=crop&auto=format&q=60`;
